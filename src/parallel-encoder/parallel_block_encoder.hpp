@@ -24,6 +24,9 @@
 ////////////////////////////////////////////////////////////////////////////////////
 // Begin Steinwurf INCLUDES                                                       //
 ////////////////////////////////////////////////////////////////////////////////////
+#include <fifi/api/field.hpp>
+#include <storage/storage.hpp
+
 #include <kodo_core/api/encoder_interface.hpp>
 #include <kodo_core/api/factory_interface.hpp>
 
@@ -45,7 +48,7 @@
 
 namespace master_thesis
 {
-template<class SuperCoder>
+template<class SuperCoder, class ThreadPool>
 class parallel_block_encoder : public kodo_core::api::encoder_interface
 {
 public:
@@ -74,6 +77,13 @@ public:
         struct impl;
         std::shared_ptr<impl> m_impl;
     };
+public:
+
+    void initialize(factory& the_factory);
+
+    ////////////////////////////////////////////////////////////////////
+    // SYMBOL STORAGE API                                             //
+    ////////////////////////////////////////////////////////////////////
 
     uint32_t symbols() const;
 
@@ -81,6 +91,25 @@ public:
 
     uint32_t block_size();
 
+    void set_bytes_used(uint32_t bytes_used);
+
+    uint32_t bytes_used() const;
+
+    uint32_t symbols_initialized() const;
+
+    bool is_every_symbol_initialized() const;
+
+    bool is_symbol_initialized(uint32_t index) const;
+
+    const uint8_t* const_symbol(uint32_t index) const;
+
+    void set_const_symbol(uint32_t index, const storage:const_storage& symbol);
+
+    void set_const_symbols(const storage::const_storage& symbol_storage);
+
+    ////////////////////////////////////////////////////////////////////
+    // PAYLOAD API                                                    //
+    ////////////////////////////////////////////////////////////////////
 
 };
 }

@@ -1,0 +1,6 @@
+{
+    "is_symlink": true, 
+    "path": "/home/tools/Documents/master-thesis-src/resolve_symlinks/boost", 
+    "real_path": "/home/tools/Documents/master-thesis-src/resolved_dependencies/boost-6990ca/3.0.0-5f0bb5", 
+    "sha1": "f19e787e005e1535351497d28847978743e12f89"
+}

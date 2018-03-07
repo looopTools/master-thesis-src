@@ -1,0 +1,3 @@
+* Master thesis todo:
+** Use shallow full vector encoder
+   This allows us to parse code symbols as reference

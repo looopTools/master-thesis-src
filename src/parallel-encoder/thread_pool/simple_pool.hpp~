@@ -1,0 +1,6 @@
+    class simple_pool
+    {
+    public:
+        simple_pool(uint32_t threads);
+
+    }

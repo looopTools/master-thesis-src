@@ -6,7 +6,7 @@ namespace thread_pool
     class simple_pool : public thread_pool
     {
     public:
-        simple_pool(uint32_t threads);
+        simple_pool(uint coefficient_vectors);
 
     };
 }

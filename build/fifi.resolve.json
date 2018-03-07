@@ -1,0 +1,6 @@
+{
+    "is_symlink": true, 
+    "path": "/home/tools/Documents/master-thesis-src/resolve_symlinks/fifi", 
+    "real_path": "/home/tools/Documents/master-thesis-src/resolved_dependencies/fifi-f85dcd/29.0.0-0dac8e", 
+    "sha1": "adf833a9b911c05d8ff75fb26adf5fe770e509fc"
+}

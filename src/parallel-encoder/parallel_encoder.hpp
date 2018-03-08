@@ -20,7 +20,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 // Begin Steinwurf INCLUDES                                                       //
 ////////////////////////////////////////////////////////////////////////////////////
-
 #include <storage/storage,hpp>
 #include <kodo_rlnc/full_vector_codes.hpp>
 
@@ -31,31 +30,36 @@
 
 namespace parallel_encoder
 {
-    template<typename DataType, class Threadpool>
+    template<typename DataType, typename Threadpool>
 class block_encoder
 {
+    using rlnc_encoder = kodo_rlnc::full_vector_encoder()
 public:
-
-    block_encoder(uint32_t symbols, uint32_t symbol_size, DataType data,
+    block_encoder(uint32_t symbols, uint32_t symbol_size,
+                  fifi::api::field field, DataType data,
                   Threadpool threadpool) : m_symbols(symbols),
                                            m_symbol_size(symbol_size),
-                                           m_data(data)
+                                           m_field(field),
+                                           m_data(data),
+                                           m_threadpool(threadpool)
     {
+        m_factory = encoder_factory(m_field, m_symbols, m_symbol_size);
 
     }
 
 
-
+private:
 
 
 
 
 private:
-
+    fifi::api::field m_field;
     uint32_t m_symbols;
     uint32_t m_symbol_size;
     DataType m_data;
-    Threadpool m_threadpool
+    Threadpool m_threadpool;
+    rlnc_encoder::factory m_factory;
 
 };
 }

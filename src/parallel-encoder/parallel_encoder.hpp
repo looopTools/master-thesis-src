@@ -30,7 +30,7 @@
 
 namespace parallel_encoder
 {
-    template<typename DataType, typename Threadpool>
+template<typename DataType, typename Threadpool>
 class block_encoder
 {
     using rlnc_encoder = kodo_rlnc::full_vector_encoder()
@@ -44,7 +44,6 @@ public:
                                            m_threadpool(threadpool)
     {
         m_factory = encoder_factory(m_field, m_symbols, m_symbol_size);
-
     }
 
 

@@ -13,24 +13,33 @@
 #include <thread>
 #include <cstdint>
 #include <vector>
+#include <functional>
 // https://github.com/progschj/ThreadPool/blob/master/ThreadPool.h
 namespace master_thesis
 {
 namespace thread_pool
 {
-    class thread_pool
+class thread_pool
+{
+public:
+
+
+    virtual std::thread get_thread() = 0;
+
+    uint32_t available_threads()
     {
-    public:
-
-        virtual std::thread
-        uint32_t hadware_currency()
-        {
-            return static_cast<uint32_t>(std::thread:hardware_concurrency);
-        }
-
-    private:
-        std::vector<std::thread> workers
-
+        return m_available_threads
     }
+
+    uint32_t hadware_currency()
+    {
+        return static_cast<uint32_t>(std::thread:hardware_concurrency);
+    }
+
+private:
+    std::vector<std::thread> workers
+    uint32_t m_available_threads;
+
+};
 }
 }

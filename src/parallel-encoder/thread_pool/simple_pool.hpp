@@ -3,6 +3,8 @@
 #include <vector>
 #include <memory>
 
+// https://github.com/progschj/ThreadPool/blob/master/ThreadPool.h
+
 namespace master_thesis
 {
 namespace thread_pool
@@ -37,13 +39,13 @@ public:
                                                  });
 
                             // If the queue is empty we have nothing to do
-                            if (this->m_stop && this->m_task.empty())
+                            if (this->m_stop && this->m_tasks.empty())
                             {
                                 return;
                             }
 
                             // Move first enqueued task to the task var
-                            task = std::move(this->m_task.front());
+                            task = std::move(this->m_tasks.front());
                             this->tasks.pop()
                         }
 
@@ -59,9 +61,27 @@ public:
     template<class Function, class... Args>
     auto enqueue(Function&& f, Args&&... args)
     {
+        using return_type = typename std::result_of<function(args...)>::type
+
         using return_type = typename std::result_of<Function(args...)>::type;
 
-        auto task = std::make_shared<>
+        auto task = std::make_shared<std::package_task<return_type>>(
+            std::bind(std::forward<Function>(f), std::<Args>(args)...));
+
+        std::future<return_type> res = m_task->get_future();
+        {
+            std::unique_lock<std::mutex> lock(queue_mutex);
+            if (stop)
+            {
+                throw std::runtime_error("enqueue on stopped Thread pool");
+            }
+
+            m_tasks.emplace([task](){(*task)();})
+
+            // Notify one waiting thread that something has been enqueued
+            m_condition.notify_one()
+        }
+
     }
 
     uint32_t available_threads()
@@ -80,10 +100,11 @@ public:
 private:
     std::vector<std::unique_ptr<std::thread>> m_threads;
     // Task which are enqued
-    std::queue<std::function<void()>> m_task;
+    std::queue<std::function<void()>> m_tasks;
 
-    std::mutex task_mutex;
+    std::mutex m_task_mutex;
 
+    std::condition_variable m_condition;
 
     uint32_t m_coefficients;
     uint64_t m_available_threads;

@@ -34,62 +34,70 @@
 #include <vector>
 #include <mutex>
 
+
 namespace master_thesis
 {
+using rlnc_encoder = kodo_rlnc::full_vector;
 
-using rlnc_encoder = kodo_rlnc::full_vector_encoder;
-
+template<typename Data>
 class simple_encoder
 {
+
 public:
-    template<typename Data>
+
     simple_encoder(uint32_t symbols, uint32_t symbol_size,
-                   fifi::api::field field, Data data) :
-        m_symbols(symbols),
-        m_symbol_size(symbol_size),
-        m_field(field),
-        m_data(data),
-        m_factory(rlnc_encoder::factory(field, symbols, symbol_size)),
-        m_completed(0),
-        m_pool(ThreadPool::ThreadPool(symbols))
+                   fifi::api::field field, Data data)
+        : m_symbols(symbols), m_symbol_size(symbol_size),
+          m_field(field), m_data(data), m_completed(0)
     {
 
     }
 
     void start()
     {
-        for (uint32_t i = 0; i < m_symbols; ++i) {
-            pool.enqueue([](){
-                    auto encoder = m_factory.build();
-                    encoder->set_const_symbols(storage::storage(m_data));
-                    Data payload(encoder-payload_size());
-                    encoder->write_payload(payload.data());
-                    m_mutex.lock();
-                    m_result.push_back(payload);
-                    ++m_completed;
-                    m_mutex.unlock();
-                });
+
+        // Create the ThreadPool with g threads, one for each generation size
+        m_pool = ThreadPool(m_symbols);
+
+        auto factory = rlnc_encoder::factory(m_field, m_symbols, m_symbol_size);
+        auto encoder = factory.build();
+        for (uint32_t i = 0; i < symbols; ++i)
+        {
+            // Enqueue the task in the ThreadPool
+            // & Allows us to change the captured value in the lambda expression
+            pool.enqueue([factory, encoder, m_data,
+                          &m_mutex, &m_result, &m_completed](){
+                             encoder->set_const_symbols(storage::storage(m_data));
+                             Data payload(encoder->payload_size());
+                             encoder->write_payload(payload.data());
+                             // Lock so we can safely write to the result
+                             m_mutex.lock();
+                             m_result.pushback(payload);
+                             ++m_completed;
+                             m_mutex.unlock();
+                         });
         }
     }
 
     bool completed()
     {
-        return !(m_completed < m_symbols);
+        return !(m_completed < (m_symbols - 1));
     }
 
-
-
+    std::vector<Data> coded_symbols()
+    {
+        return m_results;
+    }
 
 private:
+
     uint32_t m_symbols;
     uint32_t m_symbol_size;
+    uint32_t m_completed;
     fifi::api::field m_field;
     ThreadPool m_pool;
     Data m_data;
     std::vector<Data> m_result;
-    rlnc_encoder::factory m_factory;
-    std::mutex m_mutex;
-    uint32_t m_completed;
-
+    std::mutex m_mutes;
 };
 }

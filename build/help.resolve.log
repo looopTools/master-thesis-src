@@ -1,0 +1,143 @@
+wurf: Resolve execute help
+----------------------------------------
+Load "waf-tools" (help)
+Resolve failed in <waflib.extras.wurf.on_passive_load_path_resolver.OnPassiveLoadPathResolver object at 0x105375950>:
+Traceback (most recent call last):
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/try_resolver.py", line 14, in resolve
+    path=self.resolver.resolve()
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/on_passive_load_path_resolver.py", line 21, in resolve
+    raise DependencyError('Invalid path: "{}"'.format(path),self.dependency)
+DependencyError: Invalid path: "/home/tools/Documents/master-thesis-src/resolve_symlinks/waf-tools"
+ERROR: the "waf-tools" dependency is not available.
+Please check that you have a valid Steinwurf license and you can access the repository at: ['https://github.com/steinwurf/waf-tools.git']
+Dependency info:
+{ 'hash': None,
+  'internal': False,
+  u'major': 4,
+  u'method': u'semver',
+  u'name': u'waf-tools',
+  'optional': False,
+  'recurse': True,
+  u'resolver': u'git',
+  'sha1': '8bdc8e18a5322ebf140a66d417e8447cb5fca84a',
+  u'sources': [u'github.com/steinwurf/waf-tools.git']}
+read_write: { 'error_messages': [],
+  'is_symlink': True,
+  'real_path': '/home/tools/Documents/master-thesis-src/resolved_dependencies/waf-tools-ae40a5/4.8.0-4402d4',
+  'resolver_action': 'help',
+  'resolver_chain': 'Load'}
+audit: []
+Unavailable
+----------------------------------------
+Load "kodo-core" (help)
+Resolve failed in <waflib.extras.wurf.on_passive_load_path_resolver.OnPassiveLoadPathResolver object at 0x105375e10>:
+Traceback (most recent call last):
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/try_resolver.py", line 14, in resolve
+    path=self.resolver.resolve()
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/on_passive_load_path_resolver.py", line 21, in resolve
+    raise DependencyError('Invalid path: "{}"'.format(path),self.dependency)
+DependencyError: Invalid path: "/home/tools/Documents/master-thesis-src/resolve_symlinks/kodo-core"
+ERROR: the "kodo-core" dependency is not available.
+Please check that you have a valid Steinwurf license and you can access the repository at: ['https://github.com/steinwurf/kodo-core.git']
+Dependency info:
+{ 'hash': None,
+  'internal': False,
+  u'major': 15,
+  u'method': u'semver',
+  u'name': u'kodo-core',
+  'optional': False,
+  'recurse': True,
+  u'resolver': u'git',
+  'sha1': 'b7866c25cb7e577ae0e90016aedbb64f1a15aadb',
+  u'sources': [u'github.com/steinwurf/kodo-core.git']}
+read_write: { 'error_messages': [],
+  'is_symlink': True,
+  'real_path': '/home/tools/Documents/master-thesis-src/resolved_dependencies/kodo-core-f711a6/15.1.0-7134f3',
+  'resolver_action': 'help',
+  'resolver_chain': 'Load'}
+audit: []
+Unavailable
+----------------------------------------
+Load "gauge" (help)
+Resolve failed in <waflib.extras.wurf.on_passive_load_path_resolver.OnPassiveLoadPathResolver object at 0x10538b150>:
+Traceback (most recent call last):
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/try_resolver.py", line 14, in resolve
+    path=self.resolver.resolve()
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/on_passive_load_path_resolver.py", line 21, in resolve
+    raise DependencyError('Invalid path: "{}"'.format(path),self.dependency)
+DependencyError: Invalid path: "/home/tools/Documents/master-thesis-src/resolve_symlinks/gauge"
+ERROR: the "gauge" dependency is not available.
+Please check that you have a valid Steinwurf license and you can access the repository at: ['https://github.com/steinwurf/gauge.git']
+Dependency info:
+{ 'hash': None,
+  u'internal': True,
+  u'major': 11,
+  u'method': u'semver',
+  u'name': u'gauge',
+  'optional': False,
+  'recurse': True,
+  u'resolver': u'git',
+  'sha1': 'f18f54a34e9aa9873070d5d4959dcf017c9a4e84',
+  u'sources': [u'github.com/steinwurf/gauge.git']}
+read_write: { 'error_messages': [],
+  'is_symlink': True,
+  'real_path': '/home/tools/Documents/master-thesis-src/resolved_dependencies/gauge-1a4df2/11.1.0-11e3ab',
+  'resolver_action': 'help',
+  'resolver_chain': 'Load'}
+audit: []
+Unavailable
+----------------------------------------
+Load "stub" (help)
+Resolve failed in <waflib.extras.wurf.on_passive_load_path_resolver.OnPassiveLoadPathResolver object at 0x10538b350>:
+Traceback (most recent call last):
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/try_resolver.py", line 14, in resolve
+    path=self.resolver.resolve()
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/on_passive_load_path_resolver.py", line 13, in resolve
+    config=self.__read_config()
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/on_passive_load_path_resolver.py", line 26, in __read_config
+    raise DependencyError('No config - re-run configure',self.dependency)
+DependencyError: No config - re-run configure
+ERROR: the "stub" dependency is not available.
+Please check that you have a valid Steinwurf license and you can access the repository at: ['https://github.com/steinwurf/stub.git']
+Dependency info:
+{ 'hash': None,
+  u'internal': True,
+  u'major': 6,
+  u'method': u'semver',
+  u'name': u'stub',
+  'optional': False,
+  'recurse': True,
+  u'resolver': u'git',
+  'sha1': '60944906c836bdae0767511ce60b403422d5cea8',
+  u'sources': [u'github.com/steinwurf/stub.git']}
+read_write: { 'error_messages': [], 'resolver_action': 'help', 'resolver_chain': 'Load'}
+audit: []
+Unavailable
+----------------------------------------
+Load "gtest" (help)
+Resolve failed in <waflib.extras.wurf.on_passive_load_path_resolver.OnPassiveLoadPathResolver object at 0x10538b550>:
+Traceback (most recent call last):
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/try_resolver.py", line 14, in resolve
+    path=self.resolver.resolve()
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/on_passive_load_path_resolver.py", line 13, in resolve
+    config=self.__read_config()
+  File "/Users/larsnielsen/Documents/AAU/masters/10_semester/master-thesis-src/.waf-1.9.8-6657823688b736c1d1a4e2c4e8e198b4/waflib/extras/wurf/on_passive_load_path_resolver.py", line 26, in __read_config
+    raise DependencyError('No config - re-run configure',self.dependency)
+DependencyError: No config - re-run configure
+ERROR: the "gtest" dependency is not available.
+Please check that you have a valid Steinwurf license and you can access the repository at: ['https://github.com/steinwurf/gtest.git']
+Dependency info:
+{ 'hash': None,
+  u'internal': True,
+  u'major': 4,
+  u'method': u'semver',
+  u'name': u'gtest',
+  'optional': False,
+  'recurse': True,
+  u'resolver': u'git',
+  'sha1': 'c2722650944d48a25a688e27f27262c23b0eb92b',
+  u'sources': [u'github.com/steinwurf/gtest.git']}
+read_write: { 'error_messages': [], 'resolver_action': 'help', 'resolver_chain': 'Load'}
+audit: []
+Unavailable
+wurf: dependency_cache OrderedDict()

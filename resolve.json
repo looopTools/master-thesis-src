@@ -1,5 +1,23 @@
 [
     {
+        "name": "waf-tools",
+        "resolver": "git",
+        "method": "semver",
+        "major": 4,
+        "sources": [
+            "github.com/steinwurf/waf-tools.git"
+        ]
+    },
+    {
+        "name": "kodo-core",
+        "resolver": "git",
+        "method": "semver",
+        "major": 15,
+        "sources": [
+            "github.com/steinwurf/kodo-core.git"
+        ]
+    },
+    {
         "name": "gauge",
         "internal": true,
         "resolver": "git",
@@ -10,13 +28,23 @@
         ]
     },
     {
-    "name": "kodo-rlnc",
-    "optional": true,
-    "resolver": "git",
-    "method": "semver",
-    "major": 9,
-    "sources": [
-        "github.com/steinwurf/kodo-rlnc.git"
-    ]
+        "name": "stub",
+        "internal": true,
+        "resolver": "git",
+        "method": "semver",
+        "major": 6,
+        "sources": [
+            "github.com/steinwurf/stub.git"
+        ]
+    },
+    {
+        "name": "gtest",
+        "internal": true,
+        "resolver": "git",
+        "method": "semver",
+        "major": 4,
+        "sources": [
+            "github.com/steinwurf/gtest.git"
+        ]
     }
 ]

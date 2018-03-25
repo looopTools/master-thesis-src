@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # encoding: utf-8
 
-APPNAME = 'parallel-block-encoder'
+APPNAME = 'rlnc-benchmark'
 VERSION = '1.0.0'
 
 
@@ -12,10 +12,10 @@ def build(bld):
         'STEINWURF_KODO_RLNC_VERSION="{}"'.format(VERSION))
 
 
-    # bld.program(features='cxx',
-    #             source='./src/sw9-source/encoder/full_vector_encoder.cpp',
-    #             target='full_vector_encoder_benchmark',
-    #             use=['kodo_rlnc_includes'])
+    bld.program(features='cxx',
+                source='./src/parallel-encoder/simple_encoder_benchmark.cpp',
+                target='simple_encoder_benchmark',
+                use=['kodo_rlnc_includes'])
 
     # bld.program(features='cxx',
     #             source='./src/sw9-source/encoder/on_the_fly_encoder.cpp',

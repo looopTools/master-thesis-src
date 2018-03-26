@@ -35,23 +35,20 @@
 #include <vector>
 #include <mutex>
 
+#include <memory>
 namespace master_thesis
 {
-using rlnc_encoder = kodo_rlnc::full_vector_encoder;
-
-template<typename Data>
 class simple_encoder
 {
 
+    using rlnc_encoder = kodo_rlnc::full_vector_encoder;
+
 public:
 
-    simple_encoder(uint32_t symbols, uint32_t symbol_size, fifi::api:field field,
-                   Data data) :
-        m_symbols(symbols), m_symbol_size(symbol_size), m_field(field),
-        m_completed(0), m_pool(ThreadPool(symbols)),
-        m_encoder_factory(rlnc_encoder::factory(field, symbols, symbol_size)),
-        m_data(data)
-
+    simple_encoder(uint32_t symbols, uint32_t symbol_size, fifi::api::field field,
+                   std::vector<uint8_t> data) :
+        m_symbols(symbols), m_symbol_size(symbol_size),
+        m_completed(0), m_field(field), m_data(data),  m_pool(symbols)
     {
 
     }
@@ -60,14 +57,18 @@ public:
     // Have to be run - important!
     void setup()
     {
+
+        kodo_rlnc::full_vector_encoder::factory encoder_factory(m_field,
+                                                                m_symbols,
+                                                                m_symbol_size);
         for(uint32_t i = 0; i < m_symbols; ++i)
         {
-            m_encoders.push_back(m_encoder_factory.build());
+            m_encoders.push_back(encoder_factory.build());
         }
 
         for(auto encoder : m_encoders)
         {
-            encoder.set_const_symbols(storage::storage(m_data));
+            encoder->set_const_symbols(storage::storage(m_data));
         }
     }
 
@@ -75,16 +76,15 @@ public:
     {
         for (uint32_t i = 0; i < m_symbols; ++i)
         {
-            auto encoder = m_encoders.at(i)
-                m_pool.enqueue([encoder, &m_mutex, &m_completed,
-                                &m_result, &m_completed](){
-                               Data payload(encoder->payload_size());
+            auto encoder = m_encoders.at(i);
+            m_pool.enqueue([this, encoder](){
+                               std::vector<uint8_t> payload(encoder->payload_size());
                                encoder->write_payload(payload.data());
 
-                               m_mutex.lock();
-                               m_result.pushback(payload);
-                               ++m_completed;
-                               m_mutex.unlock();
+                               this->m_mutex.lock();
+                               this->m_result.push_back(payload);
+                               ++(this->m_completed);
+                               this->m_mutex.unlock();
                            });
         }
     }
@@ -98,7 +98,7 @@ public:
         return result;
     }
 
-    std::vector<Data> result()
+    std::vector<std::vector<uint8_t>> result()
     {
         return m_result;
     }
@@ -114,15 +114,13 @@ private:
 
     fifi::api::field m_field;
 
-    ThreadPool m_pool;
-
-    rlnc_encoder::factory m_encoder_factory;
-
     std::mutex m_mutex;
 
-    Data m_data;
-    std::vector<Data> m_result;
+    std::vector<uint8_t> m_data;
+    std::vector<std::vector<uint8_t>> m_result;
 
-    std::vector<rlnc_encoder> m_encoders;
+    ThreadPool m_pool;
+
+    std::vector<std::shared_ptr<kodo_rlnc::full_vector_encoder>> m_encoders;
 };
 }

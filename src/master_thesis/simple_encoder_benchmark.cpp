@@ -4,20 +4,22 @@
 #include <kodo_rlnc/full_vector_codes.hpp>
 
 
+#include <cstdint>
+#include <vector>
 
 int main()
 {
-    using rlnc_encoder = kodo_rlnc::full_vector_encoder;
-    using rlnc_decoder = kodo_rlnc::full_vector_decoder;
+
     fifi::api::field field = fifi::api::field::binary8;
 
     uint32_t symbols = 10;
     uint32_t symbol_size = 40;
 
+    std::vector<uint8_t> data;
+    data.push_back(0u);
+    auto encoder = master_thesis::simple_encoder(symbols, symbol_size, field, data);
     // In the following we will make an encoder/decoder factory.
     // The factories are used to build actual encoders/decoders
-    rlnc_encoder::factory encoder_factory(field, symbols, symbol_size);
-    auto encoder = encoder_factory.build();
 
     return 0;
 }

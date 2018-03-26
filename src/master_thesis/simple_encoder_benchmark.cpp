@@ -17,7 +17,7 @@ int main()
 
     std::vector<uint8_t> data;
     data.push_back(0u);
-    auto encoder = master_thesis::simple_encoder(symbols, symbol_size, field, data);
+    master_thesis::simple_encoder encoder(symbols, symbol_size, field, data);
     // In the following we will make an encoder/decoder factory.
     // The factories are used to build actual encoders/decoders
 

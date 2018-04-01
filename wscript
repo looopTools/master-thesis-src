@@ -17,6 +17,11 @@ def build(bld):
                 target='simple_encoder_benchmark',
                 use=['kodo_rlnc_includes'])
 
+    bld.program(features='cxx',
+                source='./src/master_thesis/complex_encoder_benchmark.cpp',
+                target='complex_encoder_benchmark',
+                use=['kodo_rlnc_includes'])
+
 
 
     # Export kodo-rlnc includes

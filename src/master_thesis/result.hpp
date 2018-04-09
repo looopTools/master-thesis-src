@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstdint>
 #include <chrono>
 #include <sstream>
@@ -10,8 +12,8 @@ class result
 public:
     result(std::chrono::microseconds start, std::chrono::microseconds end,
            uint32_t threads, uint32_t symbols, uint32_t symbol_size) :
-        m_start(start), m_end(end), m_threads(threads), m_symbols(symbols),
-        m_symbol_size(symbol_size){ }
+        m_threads(threads), m_symbols(symbols),
+        m_symbol_size(symbol_size), m_start(start), m_end(end) { }
 
     uint64_t latency()
     {
@@ -22,7 +24,7 @@ public:
     std::string to_string()
     {
         std::stringstream ss;
-        ss << m.start.count() << "," << m.end.count() << "," << latency() << ","
+        ss << m_start.count() << "," << m_end.count() << "," << latency() << ","
            << m_threads << "," << m_symbols << "," << m_symbol_size;
         return ss.str();
     }

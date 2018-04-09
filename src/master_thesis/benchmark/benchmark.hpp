@@ -9,7 +9,7 @@ namespace benchmark
 class benchmark
 {
 
-    virtual std::vector<result> run() = 0
+    virtual std::vector<result> run() = 0;
     virtual result experiment() = 0;
 
 protected:

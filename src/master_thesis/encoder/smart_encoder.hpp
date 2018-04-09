@@ -41,6 +41,8 @@
 
 namespace master_thesis
 {
+namespace encoder
+{
 class smart_encoder
 {
 
@@ -52,13 +54,13 @@ public:
     smart_encoder(uint32_t symbols, uint32_t symbol_size, fifi::api::field field,
                   std::vector<uint8_t> data) : m_symbols(symbols),
                                                m_symbol_size(symbol_size),
-                                               m_completed(0),
-                                               m_data(data)
+                                               m_completed(0), m_field(field),
+                                                                     m_data(data), m_pool(std::thread::hardware_concurrency())
     {
-        m_threads = static_cast<uint32_t>(std::thread::hardware_concurrency);
-        m_pool(m_threads);
+        m_threads = std::thread::hardware_concurrency();
         m_coefficients = symbols / m_threads;
     }
+
 
     void setup()
     {
@@ -138,11 +140,20 @@ public:
         }
     }
 
+    bool completed()
+    {
+        bool result = false;
+        m_mutex.lock();
+        result = m_completed < (m_threads - 1);
+        m_mutex.unlock();
+        return result;
+    }
+
 private:
     uint32_t m_symbols;
     uint32_t m_symbol_size;
     uint32_t m_completed;
-    uint32_t m_threads;
+    unsigned int m_threads;
     uint32_t m_coefficients;
 
     fifi::api::field m_field;
@@ -156,4 +167,5 @@ private:
 
     std::vector<std::shared_ptr<kodo_rlnc::full_vector_encoder>> m_encoders;
 };
+}
 }

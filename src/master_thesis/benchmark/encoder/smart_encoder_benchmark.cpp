@@ -1,4 +1,5 @@
 #include "../../result.hpp"
+#include "../../write_result.hpp"
 #include "../benchmark.hpp"
 #include "../../config_reader.hpp"
 #include "../../encoder/smart_encoder.hpp"
@@ -87,6 +88,6 @@ int main(int argc, char* argv[])
     std::cout << conf.to_string() << std::endl;
 
     auto benchmark = master_thesis::benchmark::encoder::smart_encoder_benchmark(1000, conf);
-    benchmark.run();
+    auto results = benchmark.run();
     return 0;
 }

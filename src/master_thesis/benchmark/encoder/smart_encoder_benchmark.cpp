@@ -31,7 +31,6 @@ public:
     {
         for (uint32_t i = 0; i < m_itterations; ++i)
         {
-            std::cout << (i + 1) <<  " exp" << std::endl;
             m_results.push_back(experiment());
         }
         return m_results;
@@ -44,7 +43,7 @@ public:
 
         uint32_t symbols = m_conf.symbols();
         uint32_t symbol_size = m_conf.symbol_size();
-
+        auto threads = (uint32_t) std::thread::hardware_concurrency();
 
         std::vector<uint8_t> data_in(symbols * symbol_size);
 
@@ -59,11 +58,9 @@ public:
         while(!encoder.completed()){}
         auto end = std::chrono::high_resolution_clock::now();
 
-        std::cout << "DONE" << std::endl;
-
         auto c_start = std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch());
         auto c_end = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch());
-        auto res = result(c_start, c_end, 8, symbols, symbol_size);
+        auto res = result(c_start, c_end, threads, symbols, symbol_size);
         return res;
     }
 
@@ -85,7 +82,6 @@ int main(int argc, char* argv[])
 
     std::string config_file = argv[1];
     auto conf = read_config(config_file);
-    std::cout << conf.to_string() << std::endl;
 
     auto benchmark = master_thesis::benchmark::encoder::smart_encoder_benchmark(1000, conf);
     auto results = benchmark.run();

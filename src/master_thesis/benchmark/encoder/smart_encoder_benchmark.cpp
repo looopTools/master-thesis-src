@@ -88,5 +88,6 @@ int main(int argc, char* argv[])
 
     auto benchmark = master_thesis::benchmark::encoder::smart_encoder_benchmark(1000, conf);
     benchmark.run();
+    std::cout << "" << std::endl;
     return 0;
 }

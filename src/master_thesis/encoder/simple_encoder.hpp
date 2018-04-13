@@ -37,6 +37,8 @@
 #include <memory>
 namespace master_thesis
 {
+namespace encoder
+{
 class simple_encoder
 {
 
@@ -118,4 +120,5 @@ private:
 
     std::vector<std::shared_ptr<rlnc_encoder>> m_encoders;
 };
+}
 }

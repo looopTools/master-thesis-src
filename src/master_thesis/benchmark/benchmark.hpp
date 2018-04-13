@@ -14,6 +14,7 @@ class benchmark
 
 protected:
     std::vector<result> m_results;
+
 };
 }
 }

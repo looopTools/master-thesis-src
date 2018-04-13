@@ -37,6 +37,8 @@
 #include <memory>
 namespace master_thesis
 {
+namespace encoder
+{
 class complex_encoder
 {
 
@@ -48,7 +50,7 @@ public:
                    std::vector<uint8_t> data) :
         m_symbols(symbols), m_symbol_size(symbol_size),
         m_completed(0), m_threads(threads), m_coefficients(symbols/threads),
-        m_field(field), m_data(data), m_pool(threads)
+        m_data(data), m_pool(threads)
     {
 
 
@@ -74,41 +76,14 @@ public:
 
     void start()
     {
-
-        auto remainder = m_symbols % m_threads; // if we have x threads and n symbols how many are not divisible ?
-
+        auto remainder = m_symbols % m_threads;
         for (uint32_t i = 0; i < m_threads; ++i)
         {
             auto encoder = m_encoders.at(i);
-            if (i != m_threads -1 )
+
+
+            if (i == m_threads - 1 && remainder != 0)
             {
-                m_pool.enqueue([this, encoder](){
-                        std::vector<std::vector<uint8_t>> total_payload;
-                        std::vector<uint8_t> payload(encoder->payload_size());
-
-                        for (uint32_t j = 0; j < this->m_coefficients; ++j)
-                        {
-                            encoder->write_payload(payload.data());
-                            total_payload.push_back(payload);
-                        }
-
-
-                        this->m_mutex.lock();
-
-                        this->m_result.insert(std::end(this->m_result),
-                                              std::begin(total_payload),
-                                              std::end(total_payload));
-
-                        this->m_result.push_back(payload);
-                        ++(this->m_completed);
-                        this->m_mutex.unlock();
-                    });
-            }
-            else if (i == m_threads - 1 && remainder != 0)
-            {
-                // If the generation % threads != 0 we will add
-                // the ramining coefficients will be added to the
-                // last thread
                 m_pool.enqueue([this, remainder, encoder](){
                         std::vector<std::vector<uint8_t>> total_payload;
                         std::vector<uint8_t> payload(encoder->payload_size());
@@ -130,10 +105,10 @@ public:
                         ++(this->m_completed);
                         this->m_mutex.unlock();
                     });
-
             }
-            else if (i == m_threads - 1)
+            else
             {
+
                 m_pool.enqueue([this, encoder](){
                         std::vector<std::vector<uint8_t>> total_payload;
                         std::vector<uint8_t> payload(encoder->payload_size());
@@ -194,4 +169,5 @@ private:
 
     std::vector<std::shared_ptr<rlnc_encoder>> m_encoders;
 };
+}
 }

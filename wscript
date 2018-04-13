@@ -16,12 +16,26 @@ def build(bld):
                 target='test_smart_encoder',
                 use=['kodo_rlnc_includes'])
 
+    bld.program(features='cxx',
+                source='./src/master_thesis/test/test_simple_encoder/test_simple_encoder.cpp',
+                target='test_simple_encoder',
+                use=['kodo_rlnc_includes'])
+
+    bld.program(features='cxx',
+                source='./src/master_thesis/test/test_complex_encoder/test_complex_encoder.cpp',
+                target='test_complex_encoder',
+                use=['kodo_rlnc_includes'])
+
 
     bld.program(features='cxx',
                 source='./src/master_thesis/benchmark/encoder/smart_encoder_benchmark.cpp',
                 target='smart_encoder_benchmark',
                 use=['kodo_rlnc_includes'])
 
+    bld.program(features='cxx',
+                source='./src/master_thesis/benchmark/encoder/simple_encoder_benchmark.cpp',
+                target='simple_encoder_benchmark',
+                use=['kodo_rlnc_includes'])
     # Export kodo-rlnc includes
     # bld(name='rlnc-benchmark',
     #     includes='./src',

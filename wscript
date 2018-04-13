@@ -11,16 +11,11 @@ def build(bld):
         'DEFINES_STEINWURF_VERSION',
         'STEINWURF_KODO_RLNC_VERSION="{}"'.format(VERSION))
 
-
     bld.program(features='cxx',
-                source='./src/master_thesis/simple_encoder_benchmark.cpp',
-                target='simple_encoder_benchmark',
+                source='./src/master_thesis/test/test_smart_encoder/test_smart_encoder.cpp',
+                target='test_smart_encoder',
                 use=['kodo_rlnc_includes'])
 
-    bld.program(features='cxx',
-                source='./src/master_thesis/complex_encoder_benchmark.cpp',
-                target='complex_encoder_benchmark',
-                use=['kodo_rlnc_includes'])
 
     bld.program(features='cxx',
                 source='./src/master_thesis/benchmark/encoder/smart_encoder_benchmark.cpp',

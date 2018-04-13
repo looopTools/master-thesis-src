@@ -23,7 +23,6 @@
 ////////////////////////////////////////////////////////////////////////////////////
 // Begin Steinwurf INCLUDES                                                       //
 ////////////////////////////////////////////////////////////////////////////////////
-#include <fifi/api/field.hpp>
 #include <storage/storage.hpp>
 #include <kodo_rlnc/full_vector_codes.hpp>
 
@@ -41,11 +40,11 @@ namespace master_thesis
 class complex_encoder
 {
 
-    using rlnc_encoder = kodo_rlnc::full_vector_encoder;
+    using rlnc_encoder = kodo_rlnc::full_vector_encoder<fifi::binary8>;
 
 public:
 
-    complex_encoder(uint32_t symbols, uint32_t symbol_size, uint32_t threads, fifi::api::field field,
+    complex_encoder(uint32_t symbols, uint32_t symbol_size, uint32_t threads,
                    std::vector<uint8_t> data) :
         m_symbols(symbols), m_symbol_size(symbol_size),
         m_completed(0), m_threads(threads), m_coefficients(symbols/threads),
@@ -61,9 +60,7 @@ public:
     void setup()
     {
 
-        kodo_rlnc::full_vector_encoder::factory encoder_factory(m_field,
-                                                                m_symbols,
-                                                                m_symbol_size);
+        rlnc_encoder::factory encoder_factory(m_symbols, m_symbol_size);
         for(uint32_t i = 0; i < m_threads; ++i)
         {
             m_encoders.push_back(encoder_factory.build());
@@ -188,9 +185,6 @@ private:
     uint32_t m_threads;
     uint32_t m_coefficients;
 
-
-    fifi::api::field m_field;
-
     std::mutex m_mutex;
 
     std::vector<uint8_t> m_data;
@@ -198,6 +192,6 @@ private:
 
     ThreadPool m_pool;
 
-    std::vector<std::shared_ptr<kodo_rlnc::full_vector_encoder>> m_encoders;
+    std::vector<std::shared_ptr<rlnc_encoder>> m_encoders;
 };
 }

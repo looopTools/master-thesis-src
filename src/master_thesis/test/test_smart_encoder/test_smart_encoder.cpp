@@ -1,4 +1,4 @@
-#include "../encoder/smart_encoder.hpp"
+#include "../../encoder/smart_encoder.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -8,7 +8,6 @@
 #include <vector>
 
 #include <storage/storage.hpp>
-#include <fifi/default_field.hpp>
 
 #include <kodo_rlnc/full_vector_codes.hpp>
 
@@ -22,8 +21,6 @@ int main()
     uint32_t symbol_size = 1000000;
     assert((symbol_size % 32) == 0);
 
-    fifi::api::field field = fifi::api::field::binary8;
-
     std::vector<uint8_t> data_in(symbols * symbol_size);
     std::vector<uint8_t> data_out(symbols * symbol_size);
 
@@ -32,13 +29,33 @@ int main()
 
     std::copy(data_in.begin(), data_in.end(), data_out.begin());
 
-    using rlnc_decoder = kodo_rlnc::full_vector_decoder;
-    rlnc_decoder::factory decoder_factory(field, symbols, symbol_size);
+    using rlnc_decoder = kodo_rlnc::full_vector_decoder<fifi::binary8>;
+    rlnc_decoder::factory decoder_factory(symbols, symbol_size);
     auto decoder = decoder_factory.build();
 
-    auto encoder = master_thesis::smart_encoder(symbols, symbol_size,
-                                                field, data_in);
+    master_thesis::encoder::smart_encoder encoder(symbols, symbol_size, data_in);
 
 
-    return 0
+
+    encoder.setup();
+    encoder.start();
+    while (!encoder.completed()) {
+        std::cout << "symbol" << std::endl;
+    }
+
+    for (auto payload : encoder.result())
+    {
+        decoder->read_payload(payload.data());
+    }
+
+    if (std::equal(data_out.begin(), data_out.end(), data_in.begin()))
+    {
+        std::cout << "DATA decoded correctly" << std::endl;
+    }
+    else
+    {
+        std::cout << "Unexpected Error" << std::endl;
+    }
+
+    return 0;
 }

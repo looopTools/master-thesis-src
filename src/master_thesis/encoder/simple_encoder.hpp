@@ -42,7 +42,7 @@ namespace encoder
 class simple_encoder
 {
 
-    using rlnc_encoder = kodo_rlnc::full_vector_encoder<fifi::binary8>;
+    using rlnc_encoder = kodo_rlnc::shallow_full_vector_encoder<fifi::binary8>;
 
 public:
 
@@ -59,6 +59,7 @@ public:
     void setup()
     {
 
+        auto t_data = storage::storage(m_data);
         rlnc_encoder::factory encoder_factory(m_symbols, m_symbol_size);
         for(uint32_t i = 0; i < m_symbols; ++i)
         {
@@ -67,7 +68,7 @@ public:
 
         for(auto encoder : m_encoders)
         {
-            encoder->set_const_symbols(storage::storage(m_data));
+            encoder->set_const_symbols(t_data);
         }
     }
 

@@ -46,7 +46,7 @@ namespace encoder
 class smart_encoder
 {
 
-    using rlnc_encoder = kodo_rlnc::full_vector_encoder<fifi::binary8>;
+    using rlnc_encoder = kodo_rlnc::shallow_full_vector_encoder<fifi::binary8>;
 
     // std::thread::hardware_concurrency();
 
@@ -65,6 +65,7 @@ public:
     {
         rlnc_encoder::factory encoder_factory(m_symbols, m_symbol_size);
 
+        auto t_data = storage::storage(m_data);
         for(uint32_t i = 0; i < m_threads; ++i)
         {
             m_encoders.push_back(encoder_factory.build());
@@ -72,7 +73,7 @@ public:
 
         for(auto encoder : m_encoders)
         {
-            encoder->set_const_symbols(storage::storage(m_data));
+            encoder->set_const_symbols(t_data);
         }
     }
 

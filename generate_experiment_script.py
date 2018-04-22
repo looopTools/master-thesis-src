@@ -53,19 +53,19 @@ def main():
     for cmd in generate_command_for_size(simple, '512', half_gig):
         commands.append(cmd)
 
-    for cmd in generate_command_for_size(complex, '1024', half_gig):
-        commands.append(cmd)
-    for cmd in generate_command_for_size(smart, '1024', half_gig):
-        commands.append(cmd)
-    for cmd in generate_command_for_size(simple, '1024', half_gig):
-        commands.append(cmd)
+    # for cmd in generate_command_for_size(complex, '1024', half_gig):
+    #     commands.append(cmd)
+    # for cmd in generate_command_for_size(smart, '1024', one_gig):
+    #     commands.append(cmd)
+    # for cmd in generate_command_for_size(simple, '1024', two_gig):
+    #     commands.append(cmd)
 
-    for cmd in generate_command_for_size(complex, '2048', half_gig):
-        commands.append(cmd)
-    for cmd in generate_command_for_size(smart, '2048', half_gig):
-        commands.append(cmd)
-    for cmd in generate_command_for_size(simple, '2048', half_gig):
-        commands.append(cmd)
+    # for cmd in generate_command_for_size(complex, '2048', half_gig):
+    #     commands.append(cmd)
+    # for cmd in generate_command_for_size(smart, '2048', one_gig):
+    #     commands.append(cmd)
+    # for cmd in generate_command_for_size(simple, '2048', two_gig):
+    #     commands.append(cmd)
 
     write_run(commands)
 

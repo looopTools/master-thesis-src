@@ -93,7 +93,7 @@ public:
     {
         bool result = false;
         m_mutex.lock();
-        result = m_completed < (m_symbols - 1);
+        result = !(m_completed < (m_symbols - 1));
         m_mutex.unlock();
         return result;
     }

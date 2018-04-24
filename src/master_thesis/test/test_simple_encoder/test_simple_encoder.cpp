@@ -40,7 +40,7 @@ int main()
     encoder.setup();
     encoder.start();
     while (!encoder.completed()) {
-        std::cout << "symbol" << std::endl;
+        std::cout << "Still Encoding" << std::endl;
     }
 
     for (auto payload : encoder.result())

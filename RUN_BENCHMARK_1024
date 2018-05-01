@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# Experiment: smart_encoder_benchmark -- Size: 1024
+
+./build/linux/smart_encoder_benchmark ./configs/1024-8-8-134217728
+sleep 10
+./build/linux/smart_encoder_benchmark ./configs/1024-8-16-67108864
+sleep 10
+./build/linux/smart_encoder_benchmark ./configs/1024-8-32-33554432
+sleep 10
+./build/linux/smart_encoder_benchmark ./configs/1024-8-64-16777216
+sleep 10
+./build/linux/smart_encoder_benchmark ./configs/1024-8-128-8388608
+sleep 10
+./build/linux/smart_encoder_benchmark ./configs/1024-8-256-4194304
+sleep 10
+
+# Experiment: smart_encoder_benchmark -- Size: 1024
+./build/linux/simple_encoder_benchmark ./configs/1024-8-8-134217728
+sleep 10
+./build/linux/simple_encoder_benchmark ./configs/1024-8-16-67108864
+sleep 10
+./build/linux/simple_encoder_benchmark ./configs/1024-8-32-33554432
+sleep 10
+./build/linux/simple_encoder_benchmark ./configs/1024-8-64-16777216
+sleep 10
+./build/linux/simple_encoder_benchmark ./configs/1024-8-128-8388608
+sleep 10
+./build/linux/simple_encoder_benchmark ./configs/1024-8-256-4194304
+sleep 10
+
+
+# Experiment: complex_encoder_benchmark -- Size: 1024
+# Threads 4
+./build/linux/complex_encoder_benchmark ./configs/1024-4-8-134217728
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-4-16-67108864
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-4-32-33554432
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-4-64-16777216
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-4-128-8388608
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-4-256-4194304
+sleep 10
+
+# Threads 8
+./build/linux/complex_encoder_benchmark ./configs/1024-8-8-134217728
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-8-16-67108864
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-8-32-33554432
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-8-64-16777216
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-8-128-8388608
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-8-256-4194304
+sleep 10
+
+# Threads 16
+./build/linux/complex_encoder_benchmark ./configs/1024-16-8-134217728
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-16-16-67108864
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-16-32-33554432
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-16-64-16777216
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-16-128-8388608
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-16-256-4194304
+sleep 10
+
+# Threads 32
+./build/linux/complex_encoder_benchmark ./configs/1024-32-8-134217728
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-32-16-67108864
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-32-32-33554432
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-32-64-16777216
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-32-128-8388608
+sleep 10
+./build/linux/complex_encoder_benchmark ./configs/1024-32-256-4194304
+sleep 10

@@ -74,6 +74,7 @@ public:
         for(auto encoder : m_encoders)
         {
             encoder->set_const_symbols(t_data);
+            encoder->set_systematic_off();
         }
     }
 
@@ -143,7 +144,7 @@ public:
     {
         bool result = false;
         m_mutex.lock();
-        result = !(m_completed < (m_threads - 1));
+        result = !(m_completed < (m_threads - 1)); // result = m_completed == m_threads - 1
         m_mutex.unlock();
         return result;
     }

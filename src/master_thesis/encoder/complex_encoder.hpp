@@ -72,6 +72,7 @@ public:
         for(auto encoder : m_encoders)
         {
             encoder->set_const_symbols(t_data);
+            encoder->set_systematic_off();
         }
     }
 

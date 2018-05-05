@@ -35,7 +35,12 @@
 #include <vector>
 #include <mutex>
 
+
+#include <string>
+#include <iostream>
+
 #include <memory>
+#include <atomic>
 
 #include <thread>
 
@@ -52,12 +57,12 @@ class smart_encoder
 
 public:
     smart_encoder(uint32_t symbols, uint32_t symbol_size, std::vector<uint8_t> data) : m_symbols(symbols),
-                                               m_symbol_size(symbol_size),
-                                                                                       m_completed(0),
-                                                                     m_data(data), m_pool(std::thread::hardware_concurrency())
+                                                                                       m_symbol_size(symbol_size),
+                                                                                       m_data(data), m_pool(std::thread::hardware_concurrency())
     {
         m_threads = std::thread::hardware_concurrency();
         m_coefficients = symbols / m_threads;
+        m_completed.store(0);
     }
 
 
@@ -76,6 +81,9 @@ public:
             encoder->set_const_symbols(t_data);
             encoder->set_systematic_off();
         }
+
+        m_result = std::vector<std::vector<uint8_t>>(m_symbols,
+                                                     std::vector<uint8_t>(m_encoders[0]->payload_size()));
     }
 
     void start()
@@ -90,14 +98,16 @@ public:
             if (i == m_threads - 1 && remainder != 0)
             {
                 m_pool.enqueue([this, remainder, encoder](){
-                        std::vector<std::vector<uint8_t>> total_payload;
+                        std::vector<std::vector<uint8_t>> total_payload(this->m_coefficients + remainder);
                         std::vector<uint8_t> payload(encoder->payload_size());
 
                         for (uint32_t j = 0; j < this->m_coefficients + remainder; ++j)
                         {
                             encoder->write_payload(payload.data());
-                            total_payload.push_back(payload);
+                            total_payload[j] = payload; //.insert(total_payload.begin() + j, payload);
                         }
+
+
 
 
                         this->m_mutex.lock();
@@ -106,33 +116,41 @@ public:
                                               std::begin(total_payload),
                                               std::end(total_payload));
 
-                        this->m_result.push_back(payload);
+                        // this->m_result.push_back(payload);
                         ++(this->m_completed);
+
                         this->m_mutex.unlock();
+
                     });
             }
             else
             {
 
                 m_pool.enqueue([this, encoder](){
-                        std::vector<std::vector<uint8_t>> total_payload;
+                        std::vector<std::vector<uint8_t>> total_payload(this->m_coefficients,
+                                                                        std::vector<uint8_t>(encoder->payload_size()));
+
                         std::vector<uint8_t> payload(encoder->payload_size());
 
                         for (uint32_t j = 0; j < this->m_coefficients; ++j)
                         {
                             encoder->write_payload(payload.data());
-                            total_payload.push_back(payload);
+                            total_payload[j] = payload; //.insert(total_payload.begin() + j, payload);
                         }
+
+
+
 
 
                         this->m_mutex.lock();
 
-                        this->m_result.insert(std::end(this->m_result),
-                                              std::begin(total_payload),
-                                              std::end(total_payload));
+                        // this->m_result.insert(std::end(this->m_result),
+                        //                       std::begin(total_payload),
+                        //                       std::end(total_payload));
 
                         this->m_result.push_back(payload);
                         ++(this->m_completed);
+
                         this->m_mutex.unlock();
                     });
             }
@@ -142,11 +160,15 @@ public:
 
     bool completed()
     {
-        bool result = false;
-        m_mutex.lock();
-        result = !(m_completed < (m_threads - 1)); // result = m_completed == m_threads - 1
-        m_mutex.unlock();
-        return result;
+        return m_completed.load() >= (m_threads - 1);
+
+        // bool res = false;
+        // m_mutex.lock();
+        // std::cout << m_completed << std::endl;
+        // res = m_completed >= (m_threads - 1);
+        // m_mutex.unlock();
+        // return res;
+
     }
 
     std::vector<std::vector<uint8_t>> result()
@@ -157,7 +179,7 @@ public:
 private:
     uint32_t m_symbols;
     uint32_t m_symbol_size;
-    uint32_t m_completed;
+    std::atomic<uint32_t> m_completed;
     unsigned int m_threads;
     uint32_t m_coefficients;
 

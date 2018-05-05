@@ -33,7 +33,7 @@
 #include <cstdint>
 #include <vector>
 #include <mutex>
-
+#include <atomic>
 #include <memory>
 namespace master_thesis
 {
@@ -49,9 +49,9 @@ public:
     simple_encoder(uint32_t symbols, uint32_t symbol_size,
                    std::vector<uint8_t> data) :
         m_symbols(symbols), m_symbol_size(symbol_size),
-        m_completed(0), m_data(data),  m_pool(symbols)
+        m_data(data),  m_pool(symbols)
     {
-
+        m_completed.store(0);
     }
 
 
@@ -71,6 +71,8 @@ public:
             encoder->set_const_symbols(t_data);
             encoder->set_systematic_off();
         }
+        m_result = std::vector<std::vector<uint8_t>>(m_symbols,
+                                                     std::vector<uint8_t>(m_encoders[0]->payload_size()));
     }
 
     void start()
@@ -78,12 +80,12 @@ public:
         for (uint32_t i = 0; i < m_symbols; ++i)
         {
             auto encoder = m_encoders.at(i);
-            m_pool.enqueue([this, encoder](){
+            m_pool.enqueue([this, encoder, i](){
                                std::vector<uint8_t> payload(encoder->payload_size());
                                encoder->write_payload(payload.data());
 
                                this->m_mutex.lock();
-                               this->m_result.push_back(payload);
+                               this->m_result[i] = payload;
                                ++(this->m_completed);
                                this->m_mutex.unlock();
                            });
@@ -92,11 +94,7 @@ public:
 
     bool completed()
     {
-        bool result = false;
-        m_mutex.lock();
-        result = !(m_completed < (m_symbols - 1));
-        m_mutex.unlock();
-        return result;
+        return m_completed.load() >= m_symbols - 1;
     }
 
     std::vector<std::vector<uint8_t>> result()
@@ -111,7 +109,7 @@ private:
 
     uint32_t m_symbols;
     uint32_t m_symbol_size;
-    uint32_t m_completed; // Used to see if encoder is done
+    std::atomic<uint32_t> m_completed; // Used to see if encoder is done
 
     std::mutex m_mutex;
 

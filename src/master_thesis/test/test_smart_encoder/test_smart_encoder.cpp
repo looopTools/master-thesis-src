@@ -6,6 +6,7 @@
 #include <ctime>
 #include <iostream>
 #include <vector>
+#include <string>
 
 #include <storage/storage.hpp>
 
@@ -40,9 +41,11 @@ int main()
     encoder.setup();
     encoder.start();
     while (!encoder.completed()) {
-        std::cout << "Still encoding" << std::endl;
+        //std::cout << "Still encoding" << std::endl;
     }
 
+
+    std::cout << "start decoding" << std::endl;
     for (auto payload : encoder.result())
     {
         decoder->read_payload(payload.data());

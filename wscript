@@ -12,6 +12,17 @@ def build(bld):
         'STEINWURF_KODO_RLNC_VERSION="{}"'.format(VERSION))
 
     bld.program(features='cxx',
+                source='./src/master_thesis/test/test_threaded_encoder/test_multiple_threaded_encoders.cpp',
+                target='test_multiple_threaded_encoders',
+                use=['kodo_rlnc_includes'])
+
+    bld.program(features='cxx',
+                source='./src/master_thesis/test/test_threaded_encoder/test_threaded_encoder.cpp',
+                target='test_threaded_encoder',
+                use=['kodo_rlnc_includes'])
+
+
+    bld.program(features='cxx',
                 source='./src/master_thesis/test/test_smart_encoder/test_smart_encoder.cpp',
                 target='test_smart_encoder',
                 use=['kodo_rlnc_includes'])
@@ -40,6 +51,11 @@ def build(bld):
     bld.program(features='cxx',
                 source='./src/master_thesis/benchmark/encoder/complex_encoder_benchmark.cpp',
                 target='complex_encoder_benchmark',
+                use=['kodo_rlnc_includes'])
+
+    bld.program(features='cxx',
+                source='./src/master_thesis/benchmark/single_thread_encoder/one_coefficient.cpp',
+                target='one_coefficient_benchmark',
                 use=['kodo_rlnc_includes'])
     # Export kodo-rlnc includes
     # bld(name='rlnc-benchmark',

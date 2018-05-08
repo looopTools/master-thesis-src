@@ -144,11 +144,11 @@ public:
 
                         this->m_mutex.lock();
 
-                        // this->m_result.insert(std::end(this->m_result),
-                        //                       std::begin(total_payload),
-                        //                       std::end(total_payload));
+                        this->m_result.insert(std::end(this->m_result),
+                                              std::begin(total_payload),
+                                              std::end(total_payload));
 
-                        this->m_result.push_back(payload);
+//                        this->m_result.push_back(payload);
                         ++(this->m_completed);
 
                         this->m_mutex.unlock();

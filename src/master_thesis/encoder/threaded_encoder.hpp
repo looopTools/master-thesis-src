@@ -6,10 +6,13 @@
 
 #include <cstdint>
 #include <vector>
+#include <algorithm>
 
 #include <thread>
 #include <mutex>
 #include <atomic>
+
+#include <chrono>
 
 namespace master_thesis
 {
@@ -52,6 +55,7 @@ public:
 
             auto encoder = m_encoders.at(i);
 
+
             if (i == m_threads.size() - 1 && m_remainder != 0)
             {
                 auto coefficients = m_coefficients + m_remainder;
@@ -63,31 +67,41 @@ public:
                             encoder->write_payload(payloads[j].data());
                         }
 
-                        this->m_mutex.lock();
+                        std::lock_guard<std::mutex> lock(this->m_mutex);
+                        for (auto element : payloads) {
+                            std::swap(v.back)
+                        }
                         this->m_result.insert(std::end(this->m_result),
                                               std::begin(payloads),
                                               std::end(payloads));
-                        this->m_mutex.unlock();
-                            });
+
+                                           });
             }
             else
             {
-                m_threads.at(i) = std::thread([this, encoder]()
+                m_threads.at(i) = std::thread([this, encoder, i]()
                                            {
-                        std::vector<std::vector<uint8_t>> payloads(this->m_coefficients, std::vector<uint8_t>(encoder->payload_size()));
-                        for (uint32_t j = 0; j < this->m_coefficients; ++j)
-                        {
-                            encoder->write_payload(payloads[j].data());
-                        }
+                                               auto start = std::chrono::high_resolution_clock::now();
+                                               std::vector<std::vector<uint8_t>> payloads(this->m_coefficients, std::vector<uint8_t>(encoder->payload_size()));
+                                               for (uint32_t j = 0; j < this->m_coefficients; ++j)
+                                               {
+                                                   encoder->write_payload(payloads[j].data());
+                                               }
 
-                        this->m_mutex.lock();
-                        this->m_result.insert(std::end(this->m_result),
-                                              std::begin(payloads),
-                                              std::end(payloads));
-                        this->m_mutex.unlock();
+                                               std::lock_guard<std::mutex> lock(this->m_mutex);
+                                               this->m_result.insert(std::end(this->m_result),
+                                                                     std::begin(payloads),
+                                                                     std::end(payloads));
+                                               auto end = std::chrono::high_resolution_clock::now();
+                                               auto c_start = std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch());
+                                               auto c_end = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch());
+
+                                               std::cout << i << " " << ((c_end.count() - c_start.count()) / 1000.0) << std::endl;
                             });
             }
+
         }
+
 
         for (uint32_t i = 0; i < m_threads.size(); ++i)
         {

@@ -67,13 +67,15 @@ public:
                             encoder->write_payload(payloads[j].data());
                         }
 
-                        std::lock_guard<std::mutex> lock(this->m_mutex);
-                        for (auto element : payloads) {
-                            std::swap(v.back)
+                        //std::lock_guard<std::mutex> lock(this->m_mutex);
+                        for (auto entity : payloads)
+                        {
+                            m_result.push_back(std::move(entity));
                         }
-                        this->m_result.insert(std::end(this->m_result),
-                                              std::begin(payloads),
-                                              std::end(payloads));
+//                        m_result.push_back(std::move(payloads));
+                        // this->m_result.insert(std::end(this->m_result),
+                        //                       std::begin(payloads),
+                        //                       std::end(payloads));
 
                                            });
             }
@@ -88,10 +90,14 @@ public:
                                                    encoder->write_payload(payloads[j].data());
                                                }
 
-                                               std::lock_guard<std::mutex> lock(this->m_mutex);
-                                               this->m_result.insert(std::end(this->m_result),
-                                                                     std::begin(payloads),
-                                                                     std::end(payloads));
+                                               //std::lock_guard<std::mutex> lock(this->m_mutex);
+                                               for (auto entity : payloads)
+                                               {
+                                                   m_result.push_back(std::move(entity));
+                                               }
+                                               // this->m_result.insert(std::end(this->m_result),
+                                               //                       std::begin(payloads),
+                                               //                       std::end(payloads));
                                                auto end = std::chrono::high_resolution_clock::now();
                                                auto c_start = std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch());
                                                auto c_end = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch());

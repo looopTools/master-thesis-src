@@ -34,39 +34,44 @@ void test_case(uint32_t symbols, uint32_t symbol_size)
 
     auto start = std::chrono::high_resolution_clock::now();
     encoder.encode();
-    while (!encoder.completed()){std::cout << "encoding" << std::endl;}
-    auto end = std::chrono::high_resolution_clock::now();
+    // while (!encoder.completed()){std::cout << "encoding" << std::endl;}
+    // auto end = std::chrono::high_resolution_clock::now();
 
-    auto c_start = std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch());
-    auto c_end = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch());
+    // auto c_start = std::chrono::duration_cast<std::chrono::microseconds>(start.time_since_epoch());
+    // auto c_end = std::chrono::duration_cast<std::chrono::microseconds>(end.time_since_epoch());
 
-    auto res = (c_end.count() - c_start.count()) / 1000.0;
-    std::cout << res << std::endl;
+    // auto res = (c_end.count() - c_start.count()) / 1000.0;
+    // std::cout << res << std::endl;
 
 
-    std::cout << "start decoding" << std::endl;
-    for (auto payload : encoder.result())
-    {
-        decoder->read_payload(payload.data());
-    }
+    // std::cout << "start decoding" << std::endl;
+    // for (auto payload : encoder.result())
+    // {
+    //     decoder->read_payload(payload.data());
+    // }
 
-    if (std::equal(data_out.begin(), data_out.end(), data_in.begin()))
-    {
-        std::cout << "DATA decoded correctly" << std::endl;
-    }
-    else
-    {
-        std::cout << "Unexpected Error" << std::endl;
-    }
+    // if (std::equal(data_out.begin(), data_out.end(), data_in.begin()))
+    // {
+    //     std::cout << "DATA decoded correctly" << std::endl;
+    // }
+    // else
+    // {
+    //     std::cout << "Unexpected Error" << std::endl;
+    // }
 }
 
 int main()
 {
     test_case(8,67108864);
+    std::cout << "" << std::endl;
     test_case(16,33554432);
+        std::cout << "" << std::endl;
     test_case(32,16777216);
+        std::cout << "" << std::endl;
     test_case(64,8388608);
+        std::cout << "" << std::endl;
     test_case(128,4194304);
+        std::cout << "" << std::endl;
     test_case(256,2097152);
     return 0;
 }

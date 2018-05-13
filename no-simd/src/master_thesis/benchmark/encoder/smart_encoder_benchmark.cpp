@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
     auto benchmark = master_thesis::benchmark::encoder::smart_encoder_benchmark(1000, conf);
     auto results = benchmark.run();
 
-    master_thesis::write_result(master_thesis::generate_path("t_smart_encoder",
+    master_thesis::write_result(master_thesis::generate_path("no_simd_smart_encoder",
                                                              "benchmark",
                                                              conf), results);
 

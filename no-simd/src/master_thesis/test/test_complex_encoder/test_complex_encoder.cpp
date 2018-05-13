@@ -1,4 +1,4 @@
-#include "../../encoder/smart_encoder.hpp"
+#include "../../encoder/complex_encoder.hpp"
 
 #include <algorithm>
 #include <cassert>
@@ -6,7 +6,6 @@
 #include <ctime>
 #include <iostream>
 #include <vector>
-#include <string>
 
 #include <storage/storage.hpp>
 
@@ -34,18 +33,16 @@ int main()
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
     auto decoder = decoder_factory.build();
 
-    master_thesis::encoder::smart_encoder encoder(symbols, symbol_size, data_in);
+    master_thesis::encoder::complex_encoder encoder(symbols, symbol_size, 8, data_in);
 
 
 
     encoder.setup();
     encoder.start();
     while (!encoder.completed()) {
-        std::cout << "Still encoding" << std::endl;
+
     }
 
-
-    std::cout << "start decoding" << std::endl;
     for (auto payload : encoder.result())
     {
         decoder->read_payload(payload.data());

@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# Experiment: smart_encoder_benchmark -- Size: 512
+
+./no-simd/build/linux/smart_encoder_benchmark ./configs/512-8-256-2097152
+sleep 10
+./no-simd/build/linux/smart_encoder_benchmark ./configs/512-8-16-33554432
+sleep 10
+./no-simd/build/linux/smart_encoder_benchmark ./configs/512-8-8-67108864
+sleep 10
+./no-simd/build/linux/smart_encoder_benchmark ./configs/512-8-64-8388608
+sleep 10
+./no-simd/build/linux/smart_encoder_benchmark ./configs/512-8-32-16777216
+sleep 10
+./no-simd/build/linux/smart_encoder_benchmark ./configs/512-8-128-4194304
+sleep 10
+
+# Experiment: simple_encoder_benchmark -- Size: 512
+
+./no-simd/build/linux/simple_encoder_benchmark ./configs/512-8-256-2097152
+sleep 10
+./no-simd/build/linux/simple_encoder_benchmark ./configs/512-8-16-33554432
+sleep 10
+./no-simd/build/linux/simple_encoder_benchmark ./configs/512-8-8-67108864
+sleep 10
+./no-simd/build/linux/simple_encoder_benchmark ./configs/512-8-64-8388608
+sleep 10
+./no-simd/build/linux/simple_encoder_benchmark ./configs/512-8-32-16777216
+sleep 10
+./no-simd/build/linux/simple_encoder_benchmark ./configs/512-8-128-4194304
+sleep 10
+
+# Experiment: complex_encoder_benchmark -- Size: 512
+
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-8-256-2097152
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-8-16-33554432
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-32-128-4194304
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-8-8-67108864
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-32-32-16777216
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-4-256-2097152
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-4-16-33554432
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-8-64-8388608
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-16-128-4194304
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-16-32-16777216
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-4-64-8388608
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-16-64-8388608
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-4-8-67108864
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-16-16-33554432
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-16-256-2097152
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-16-8-67108864
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-8-32-16777216
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-8-128-4194304
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-32-64-8388608
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-32-256-2097152
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-32-16-33554432
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-4-128-4194304
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-4-32-16777216
+sleep 10
+./no-simd/build/linux/complex_encoder_benchmark ./configs/512-32-8-67108864

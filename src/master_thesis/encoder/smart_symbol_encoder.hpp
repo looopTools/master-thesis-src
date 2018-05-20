@@ -47,7 +47,7 @@ public:
                          const storage::const_storage& symbol_storage) :
         m_symbols(symbols), m_symbol_size(symbol_size),
         m_symbol_width(symbol_width), m_cache_size(cache_size),
-        m_completed(0), m_active_threads(0);
+        m_completed(0), m_active_threads(0), m_pool(std::thread::hardware_concurrency())
     {
 
         // If not the symbol_size % symbol_width == 0
@@ -66,8 +66,6 @@ public:
         // If m_threads !> 1 then this makes no sense
         assert(m_threads > 1);
 
-        m_pool(m_threads); // initialise the size of the thread pool
-
 
         rlnc_encoder::factory encoder_factory(symbols, symbol_width);
 
@@ -84,51 +82,63 @@ public:
         // We prealloacted the m_result vector, to decrease latency of encoding
         m_result = std::vector<std::vector<uint8_t>>(symbols,
                                                      std::vector<uint8_t>(symbol_size));
+
+        // Generating coefficients
+        m_coefficients = std::vector<std::vector<uint8_t>>(symbols,
+                                                           std::vector<uint8_t>((m_encoders.at(0))->coefficient_vector_size()));
+
+        for(uint32_t i = 0; i < symbols; ++i)
+        {
+            std::vector<uint8_t> coefficients((m_encoders.at(i))->coefficient_vector_size());
+            // Fill coefficient vector
+            (m_encoders.at(i))->generate(coefficients.data());
+            m_coefficients.at(i) = coefficients;
+        }
+
+
+
     }
 
     void encode() {
+
         for (uint32_t i = 0; i < m_symbols; ++i)
         {
-            // Generate coefficient vector
-            // We generate g coefficient vectors
-            std::vector<uint8_t> coefficients((m_encoders.at(0))->coefficient_vector_size());
-            (m_encoders.at(0))->generate(coefficients.data());
-
-            for (uint32_t j = 0; j < m_symbols; ++j)
+            for(uint32_t j = 0; j < m_fragments; ++j)
             {
+                m_pool.enqueue([this, j]
+                {
+                    while(this->encoder_index.empty()) {}
+                    auto e_index = this->encoder_index.front();
+                    this->encoder_index.pop();
 
-                m_pool.enqueue([this, coefficients, i, j, &coded_symbol](){
-                        while(this->encoder_index.empty()){}
-
-                        // This might need a mutex lock
-                        // moste likely
-                        auto e_index = this->encoder_index.front();
-                        this->encoder_index.pop();
-
-                        // Ready to receive the coded symbol
-                        auto coded_symbol = std::vector<uint8_t>(m_symbol_width);
-
-                        (this->m_encoders.at(e_index))->write_symbol(
-                            coded_symbol.data(), coefficients.data());
-
-                        index = j * this->m_symbols;
-
-                        for (auto part : coded_symbol) {
-                            this->m_result.at(i)[index] = part;
+                    for(uint32_t x = 0; x < this->m_symbols; ++x)
+                    {
+                        auto coded_symbol = std::vector<uint8_t>(this->m_symbol_width);
+                        (this->m_encoders.at(e_index))->write_symbol(coded_symbol.data(), this->m_coefficients.at(x).data());
+                        uint32_t index = j * this->m_symbols;
+                        for (auto part : coded_symbol)
+                        {
+                            this->m_result.at(x)[index] = part;
                             ++index;
                         }
-
                         this->encoder_index.push(e_index);
-                        ++(this->m_fragements);
-                    });
+                        ++(this->m_completed);
+                        this->m_result.at(x).insert(std::end(this->m_result.at(x)), std::begin(this->m_coefficients.at(x)), std::end(this->m_coefficients.at(x)));
+
+                    }
+                });
             }
-            (m_results.at(i)).push_back(std:move(coefficients));
         }
     }
 
     bool completed()
     {
-        return m_completed >= m_fragements * m_symbols;
+        return m_completed >= m_fragments * m_symbols;
+    }
+
+    std::vector<std::vector<uint8_t>> result()
+    {
+        return m_result;
     }
 
 
@@ -139,13 +149,14 @@ private:
     uint32_t m_symbol_width;
     uint32_t m_cache_size;
     uint32_t m_threads;
-    uint32_t m_fragements;
+    uint32_t m_fragments;
     uint32_t m_completed;
     uint32_t m_active_threads;
 
     std::queue<uint32_t> encoder_index;
 
     std::vector<std::vector<uint8_t>> m_result;
+    std::vector<std::vector<uint8_t>> m_coefficients;
 
     std::vector<std::shared_ptr<rlnc_encoder>> m_encoders;
 

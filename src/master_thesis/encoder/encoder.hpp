@@ -13,7 +13,7 @@ protected:
 
     uint32_t m_symbols;
     uint32_t m_symbol_size;
-    uint32_t m_completed
+    uint32_t m_completed;
 
 
 };

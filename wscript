@@ -37,8 +37,13 @@ def build(bld):
                 target='test_complex_encoder',
                 use=['kodo_rlnc_includes'])
 
+    # bld.program(features='cxx',
+    #             source='./src/master_thesis/test/test_smart_symbol_encoder/test_smart_symbol_encoder.cpp',
+    #             target='test_smart_symbol_encoder',
+    #             use=['kodo_rlnc_includes'])
+
     bld.program(features='cxx',
-                source='./src/master_thesis/test/test_smart_symbol_encoder/test_smart_symbol_encoder.cpp',
+                source='./src/master_thesis/test/test_temp_smart_symbol_encoder/test_temp_smart_symbol_encoder.cpp',
                 target='test_smart_symbol_encoder',
                 use=['kodo_rlnc_includes'])
 

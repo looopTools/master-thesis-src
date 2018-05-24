@@ -29,6 +29,9 @@
 #include <queue>
 
 #include <thread>
+
+
+
 namespace master_thesis
 {
 namespace encoder
@@ -44,7 +47,7 @@ public:
     //        it any ways for reasons
     smart_symbol_encoder(uint32_t symbols, uint32_t symbol_size,
                          uint32_t symbol_width, uint32_t cache_size,
-                         const storage::const_storage& symbol_storage) :
+                         std::vector<uint8_t> symbol_storage) :
         m_symbols(symbols), m_symbol_size(symbol_size),
         m_symbol_width(symbol_width), m_cache_size(cache_size),
         m_completed(0), m_active_threads(0), m_pool(std::thread::hardware_concurrency())
@@ -55,6 +58,26 @@ public:
         // and as this is proof-of-concept we set this limitation
 //        assert(symbols % symbol_width == 0);
         m_fragments = symbols;
+
+        // We have k fragement vectors, with the total size of g
+
+
+        uint32_t fragement_index = 0; // Current fragement index
+        uint32_t original_data_index = 0; // current fragement index
+        uint32_t bytes_in_vector = symbols * symbol_width; // how many fragements of size l in a vector
+
+
+        for (uint32_t i = 0; i < symbol_size; ++i)
+        {
+            std::vector<uint8_t> fragement_vector;
+
+            for (uint32_t j = 0; j < symbols * symbol_width; ++j)
+            {
+                fragement_vector.push_back(symbol_Stroage.at(original_data_index));
+                ++original_data_index; // Move to next byte in original data
+            }
+            m_fragement_vectors.push_back(fragement_vector)
+        }
 
         m_threads = static_cast<uint32_t>(std::thread::hardware_concurrency());
 
@@ -68,6 +91,13 @@ public:
 
 
         rlnc_encoder::factory encoder_factory(symbols, symbol_width);
+
+        for (uint32_t i = 0; i < symbol_size; ++i)
+        {
+            auto encoder = encoder_factory.build();
+            encoder->set_const_symbols(storage::storage(m_fragment_vectors.at(i))); // Set the specific fragement vector as data input
+            encoder->set_systematic_off();
+        }
 
         for (uint32_t i = 0; i < m_threads; ++i)
         {
@@ -157,6 +187,7 @@ private:
 
     std::vector<std::vector<uint8_t>> m_result;
     std::vector<std::vector<uint8_t>> m_coefficients;
+    std::vector<std::vector<uint8_t>> m_fragement_vectors;
 
     std::vector<std::shared_ptr<rlnc_encoder>> m_encoders;
 

@@ -41,28 +41,34 @@ public:
 
     // g: symbols - generation size
     // k: symbol_size - symbol size
-    // l: fragement_size - amount of bytes in fragement
+    // l: fragement_width - amount of bytes in fragement
+    // t: threads -- Maximum amount of concurrent threads
     // cache_size: total caches size not the amound of bytes
     smart_symbol_encoder(uint32_t symbols, uint32_t symbol_size,
                          uint32_t fragement_width, uint32_t cache_size,
                          std::vector<uint8_t> data) :
-        m_symbols(symbols), m_symbol_size(symbol_size),
-        m_fragement_width(fragement_width), m_cache_size(cache_size),
-        m_encoder_index(0), m_data(data),
+        m_symbols(symbols), m_cache_size(cache_size),
+        m_encoder_index(0),
         m_pool(std::thread::hardware_concurrency())
     {
+
+        m_data = transpose(data);
+        auto threads = static_cast<uint32_t>(std::thread::hardware_concurrency());
+        m_fragement_width = cache_size / (threads * symbols);
+        m_symbol_size = data.size() / (symbols * m_fragement_width);
+
+        rlnc_encoder::factory encoder_factory(symbols, m_fragement_width);
+
         uint32_t data_index = 0;
         uint32_t bytes_in_fragement = fragement_width * symbols;
 
-        rlnc_encoder::factory encoder_factory(symbols, fragement_width);
-
-        for(uint32_t i = 0; i < symbol_size; ++i)
+        for(uint32_t i = 0; i < m_symbol_size; ++i)
         {
             auto encoder = encoder_factory.build();
-            std::vector<uint8_t>::const_iterator start = data.begin() + data_index;
-            std::vector<uint8_t>::const_iterator end = data.begin() + data_index + bytes_in_fragement;
+            std::vector<uint8_t>::const_iterator start = m_data.begin() + data_index;
+            std::vector<uint8_t>::const_iterator end = m_data.begin() + data_index + bytes_in_fragement;
             auto data = std::vector<uint8_t>(start, end);
-            encoder->set_const_symbols(storage::storage(data));
+            encoder->set_const_symbols(storage::storage(m_data));
             data_index = data_index + bytes_in_fragement + 1;
             encoder->set_systematic_off();
             m_encoders.push_back(encoder);
@@ -81,7 +87,7 @@ public:
         }
 
         m_result = std::vector<std::vector<uint8_t>>(symbols,
-                                                     std::vector<uint8_t>(symbol_size));
+                                                     std::vector<uint8_t>(data.size() / symbols));
 
     }
 
@@ -93,6 +99,7 @@ public:
             m_pool.enqueue([this, encoder_index]{
 
                     auto encoder = this->m_encoders.at(encoder_index);
+
 
                     for (uint32_t j = 0; j < this->m_symbols; ++j)
                     {
@@ -106,7 +113,6 @@ public:
                             ++index;
                         }
                     }
-
                     ++(this->m_completed);
                 });
         }
@@ -122,6 +128,27 @@ private:
     uint32_t get_encoder_index()
     {
         return m_encoder_index++;
+    }
+
+    std::vector<uint8_t> transpose(std::vector<uint8_t> data, g, l)
+    {
+        assert(data.size() % g == 0);
+
+        auto result = std::vector<uint8_t>(data.size());
+
+        for(uint32 daniel = 0; daniel < (data.size() / g); ++daniel)
+        {
+            for(uint32_t i = 0; i < g; ++i)
+            {
+                for(uint32_t j = 0; j < l; ++j)
+                {
+                    result[j+i*l+daniel*g*l] = data.at(j + (i * (data.size()/g)) + daniel  * l);
+                }
+            }
+        }
+
+        return result
+
     }
 
 

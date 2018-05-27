@@ -30,7 +30,13 @@ int main()
     rlnc_decoder::factory decoder_factory(symbols, symbol_size);
     auto decoder = decoder_factory.build();
 
-    master_thesis::encoder::smart_symbol_encoder(symbols, symbol_size, 124, 6400000, data_in);
+    master_thesis::encoder::smart_symbol_encoder encoder(symbols, symbol_size,  6400000, data_in);
+
+    encoder.encode();
+
+    while(encoder.completed()) {}
+
+    // ;std::cout << "l" << std::endl;
 
 
     return 0;

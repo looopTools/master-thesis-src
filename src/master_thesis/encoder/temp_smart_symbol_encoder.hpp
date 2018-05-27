@@ -26,8 +26,10 @@
 
 #include <cstdint>
 #include <vector>
-
+#include <atomic>
 #include <thread>
+
+#include <iostream>
 
 namespace master_thesis
 {
@@ -43,40 +45,47 @@ public:
     // k: symbol_size - symbol size
     // l: fragement_width - amount of bytes in fragement
     // t: threads -- Maximum amount of concurrent threads
-    // cache_size: total caches size not the amound of bytes
-    smart_symbol_encoder(uint32_t symbols, uint32_t symbol_size,
-                         uint32_t fragement_width, uint32_t cache_size,
-                         std::vector<uint8_t> data) :
-        m_symbols(symbols), m_cache_size(cache_size),
+    // cache_size: cache size in bytes
+    smart_symbol_encoder(uint32_t symbols, uint32_t symbol_size, uint32_t cache_size,
+                         std::vector<uint8_t> data) : m_cache_size(cache_size),
         m_encoder_index(0),
         m_pool(std::thread::hardware_concurrency())
     {
 
-        m_data = transpose(data);
         auto threads = static_cast<uint32_t>(std::thread::hardware_concurrency());
+
         m_fragement_width = cache_size / (threads * symbols);
+
         m_symbol_size = data.size() / (symbols * m_fragement_width);
 
+        // m_data = transpose(data, symbols, m_fragement_width);
         rlnc_encoder::factory encoder_factory(symbols, m_fragement_width);
 
+
         uint32_t data_index = 0;
-        uint32_t bytes_in_fragement = fragement_width * symbols;
 
         for(uint32_t i = 0; i < m_symbol_size; ++i)
         {
             auto encoder = encoder_factory.build();
-            std::vector<uint8_t>::const_iterator start = m_data.begin() + data_index;
-            std::vector<uint8_t>::const_iterator end = m_data.begin() + data_index + bytes_in_fragement;
-            auto data = std::vector<uint8_t>(start, end);
-            encoder->set_const_symbols(storage::storage(m_data));
-            data_index = data_index + bytes_in_fragement + 1;
+            std::vector<uint8_t> c_data;
+
+            for (uint32_t j = 0; j < symbols * m_fragement_width; ++j)
+            {
+                c_data.push_back(data.at(data_index));
+                ++data_index;
+            }
+
+            encoder->set_const_symbols(storage::storage(c_data));
             encoder->set_systematic_off();
             m_encoders.push_back(encoder);
         }
 
 
+
+
         // Pre generating all coefficients
         auto encoder = m_encoders.at(0); // We only need to use the first encoder
+
 
         for (uint32_t i = 0; i < symbols; ++i)
         {
@@ -91,7 +100,7 @@ public:
 
     }
 
-    void encoded()
+    void encode()
     {
         for (uint32_t i = 0; i < m_symbol_size; ++i)
         {
@@ -120,7 +129,7 @@ public:
 
     bool completed()
     {
-        return m_completed >= (m_encoders.size() - 1);
+        return m_completed == (m_encoders.size() - 1);
     }
 
 private:
@@ -130,13 +139,13 @@ private:
         return m_encoder_index++;
     }
 
-    std::vector<uint8_t> transpose(std::vector<uint8_t> data, g, l)
+    std::vector<uint8_t> transpose(std::vector<uint8_t> data, uint32_t g, uint32_t l)
     {
         assert(data.size() % g == 0);
 
         auto result = std::vector<uint8_t>(data.size());
 
-        for(uint32 daniel = 0; daniel < (data.size() / g); ++daniel)
+        for(uint32_t daniel = 0; daniel < (data.size() / g); ++daniel)
         {
             for(uint32_t i = 0; i < g; ++i)
             {
@@ -147,7 +156,7 @@ private:
             }
         }
 
-        return result
+        return result;
 
     }
 
@@ -160,7 +169,7 @@ private:
     uint32_t m_fragement_width;
     uint32_t m_cache_size;
     uint32_t m_encoder_index;
-    uint32_t m_completed;
+    std::atomic<uint32_t> m_completed;
 
     std::vector<std::vector<uint8_t>> m_coefficients;
     std::vector<std::vector<uint8_t>> m_result;

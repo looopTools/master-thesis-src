@@ -1,0 +1,12 @@
+./build/linux/smart_symbol_encoder_benchmark ./configs/512-8-256-2097152
+sleep 10
+./build/linux/smart_symbol_encoder_benchmark ./configs/512-8-16-33554432
+sleep 10
+./build/linux/smart_symbol_encoder_benchmark ./configs/512-8-8-67108864
+sleep 10
+./build/linux/smart_symbol_encoder_benchmark ./configs/512-8-64-8388608
+sleep 10
+./build/linux/smart_symbol_encoder_benchmark ./configs/512-8-32-16777216
+sleep 10
+./build/linux/smart_symbol_encoder_benchmark ./configs/512-8-128-4194304
+sleep 10

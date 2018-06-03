@@ -51,14 +51,14 @@ public:
         m_encoder_index(0),
         m_pool(std::thread::hardware_concurrency())
     {
-
+        m_completed.store(0);
         auto threads = static_cast<uint32_t>(std::thread::hardware_concurrency());
 
         m_fragement_width = cache_size / (threads * symbols);
 
         m_symbol_size = data.size() / (symbols * m_fragement_width);
 
-        // m_data = transpose(data, symbols, m_fragement_width);
+        m_data = transpose(data, symbols, m_fragement_width);
         rlnc_encoder::factory encoder_factory(symbols, m_fragement_width);
 
 
@@ -122,14 +122,29 @@ public:
                             ++index;
                         }
                     }
+
                     ++(this->m_completed);
                 });
         }
     }
 
+
+    std::vector<std::vector<uint8_t>> data()
+    {
+        // Append coefficients
+        for(uint32_t i = 0; i < m_result.size(); ++i)
+        {
+            auto res = m_result.at(i);
+            auto coeff = m_coefficients.at(i);
+            res.insert(std::end(res), std::begin(coeff), std::end(coeff));
+            m_result.at(i) = res;
+        }
+        return m_result;
+    }
+
     bool completed()
     {
-        return m_completed == (m_encoders.size() - 1);
+        return m_completed.load() == m_encoders.size();
     }
 
 private:

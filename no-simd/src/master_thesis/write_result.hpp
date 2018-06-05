@@ -23,7 +23,7 @@ namespace master_thesis
         std::time_t result = std::time(nullptr);
 
         std::stringstream ss;
-        ss << "../results/" << experiment_name << "/" << result << "_" << experiment_name
+        ss << "./results/" << experiment_name << "/" << result << "_" << experiment_name
            << "_" << type << "_" << conf.threads() << "_" << conf.symbols()
            << "_" << conf.symbol_size();
         return ss.str();

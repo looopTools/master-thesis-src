@@ -83,7 +83,8 @@ int main(int argc, char* argv[])
     std::string config_file = argv[1];
     auto conf = read_config(config_file);
 
-    auto benchmark = master_thesis::benchmark::encoder::smart_encoder_benchmark(1000, conf);
+    // auto benchmark = master_thesis::benchmark::encoder::smart_encoder_benchmark(1000, conf);
+    auto benchmark = master_thesis::benchmark::encoder::smart_encoder_benchmark(10, conf);
     auto results = benchmark.run();
 
     master_thesis::write_result(master_thesis::generate_path("no_simd_smart_encoder",

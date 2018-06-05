@@ -27,12 +27,15 @@ public:
     smart_symbol_encoder_benchmark(uint32_t itterations, config conf) :
         m_itterations(itterations), m_conf(conf){}
 
+
     std::vector<result> run()
     {
         for (uint32_t i = 0; i < m_itterations; ++i)
         {
             m_results.push_back(experiment());
+
         }
+
         return m_results;
     }
 
@@ -45,7 +48,7 @@ public:
         uint32_t symbol_size = m_conf.symbol_size();
         auto threads = (uint32_t) std::thread::hardware_concurrency();
 
-        uint32_t cache_size = 8388608; // Cache size: 8388608 in bytes
+        uint32_t cache_size = 32768; // Cache size for the mac in bytes -- sysctl hw.l1icachesize // Cache size: 8388608 in bytes
 
         std::vector<uint8_t> data_in(symbols * symbol_size);
 
@@ -84,7 +87,7 @@ int main(int argc, char* argv[])
     std::string config_file = argv[1];
     auto conf = read_config(config_file);
 
-    auto benchmark = master_thesis::benchmark::encoder::smart_symbol_encoder_benchmark(1000, conf);
+    auto benchmark = master_thesis::benchmark::encoder::smart_symbol_encoder_benchmark(1, conf);
     auto results = benchmark.run();
 
     master_thesis::write_result(master_thesis::generate_path("smart_symbol_encoder",
